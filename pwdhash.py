@@ -3,6 +3,7 @@
 import re
 import hmac
 import itertools
+import pyperclip
 
 def b64_hmac_md5(key, data):
     """
@@ -152,28 +153,19 @@ def console_main():
         parser.set_defaults(clipboard_domain = False)
         return parser.parse_args()
     
-    def copy(text):
-       command = ' '.join(["echo ", text, "| tr -d '\n' | pbcopy -Prefer txt"])
-       p = Popen(command, shell=True)
-       sts = waitpid(0, 0)
-
-    try:
-        (options, args) = parse_cmd_line()
+    (options, args) = parse_cmd_line()
     
-        if args != []:
-            domain = sys.argv[1]
-        elif options.clipboard_domain:
-            domain = Popen(["pbpaste"], stdout=PIPE).communicate()[0]
-        else:
-            domain = raw_input("domain: ").strip()
+    if args != []:
+        domain = sys.argv[1]
+    elif options.clipboard_domain:
+        domain = pyperclip.paste()
+    else:
+        domain = raw_input("domain: ").strip()
 
-        password = getpass.getpass("Password for %s: " % domain)
-        generated = generate(password, domain)
+    password = getpass.getpass("Password for %s: " % domain)
+    generated = generate(password, domain)
 
-        copy(generated)
-    except:
-        print ''
-        pass
+    pyperclip.copy(generated)
 
 
 if __name__ == '__main__':
