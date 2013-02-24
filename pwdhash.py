@@ -162,7 +162,7 @@ def console_main():
     else:
         domain = raw_input("domain: ").strip()
 
-    password = getpass.getpass("Password for %s: " % domain)
+    password = getpass.getpass("Password for %s: " % extract_domain(domain))
     generated = generate(password, domain)
 
     pyperclip.copy(generated)
